@@ -13,7 +13,7 @@ return [
     */
 
     'api_key' => env('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'),
-    'organization' => env('Personal'),
+    'organization' => env('org-IkCz7d7pYZyHVtNdCi6H5uen'),
 
     /*
     |--------------------------------------------------------------------------
