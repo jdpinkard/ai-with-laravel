@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use OpenAI\Laravel\Facades\OpenAI;
+use app\Actions\FirstPrompt;
 /*
 |--------------------------------------------------------------------------
 | Console Routes
@@ -13,18 +14,3 @@ use OpenAI\Laravel\Facades\OpenAI;
 | simple approach to interacting with each command's IO methods.
 |
 */
-
-Artisan::command('inspire', function () {
-    $this->comment(
-
-        OpenAI::chat()->create([
-            'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                [
-                    'role' => 'user',
-                    'content' => 'Hello, who are you?',
-                ]
-            ],
-        ])->choices[0]->message->content
-    );
-})->purpose('Display an inspiring quote');
