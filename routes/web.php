@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use app\Actions\FirstPrompt;
+use App\Models\Conversation;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,15 +31,33 @@ use app\Actions\FirstPrompt;
 // create a conversation
 // save prompts and responses
 
-Route::get('/conversations/{id}', function() {
+Route::get('/conversations/{id}', function($id) {
+    $conversation = $id == 'new' ? null : Conversation::find($id);
+
     return view('conversation', [
-        'conversation' => null
+        'conversation' => $conversation,
     ]);
-});
+})->name('coversation');
 
-Route::get('chat', function(FirstPrompt $prompt) {
+Route::post('chat/{id}', function(Request $request, FirstPrompt $prompt, $id) {
+    if ($id == 'new') {
+        $conversation = Conversation::create();
+    } else {
+        $conversation = Conversation::find($id);
+    }
 
-});
+    $conversation->messages()->create([
+        'content' => $request->input('prompt')
+    ]);
+
+    $result = $prompt->handle($request->input('prompt'));
+
+    $conversation->messages()->create([
+        'content' => $result->choices[0]->message->content
+    ]);
+
+    return redirect()->route('conversation', ['id' => $conversation->id]);
+})->name('chat');
 
 Route::get('/', function () {
     return view('welcome');

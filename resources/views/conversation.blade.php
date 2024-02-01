@@ -17,9 +17,12 @@
     </head>
     <body class="antialiased">
         <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">            
-           <!-- {{-- Prompt and response messages here --}} -->
-
-                <form method="POST" action="chat">
+                @foreach($conversation?->messages ?? collect() as $message)   
+                <div>
+                    {{ $message->content }}
+                </div>
+                @endforeach
+                <form method="POST" action="{{ route('chat', [$coversation?->id ?? 'new']) }}">
                     @csrf
                     <input type="text" name="prompt" />>
                     <button type="submit">Submit</button>
