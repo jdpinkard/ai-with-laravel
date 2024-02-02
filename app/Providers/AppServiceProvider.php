@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use andreskrey\Readability\Readability;
+use andreskrey\Readability\Configuration;
+use \Probots\Pinecone\Client as Pinecone;
 use Lorisleiva\Actions\Facades\Actions;
+use Illuminate\Support\ServiceProvider;
+use App\Browserless;
 
 class AppServiceProvider extends ServiceProvider
 {

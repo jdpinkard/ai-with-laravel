@@ -1,9 +1,21 @@
 <?php
 
+use \Probots\Pinecone\Client as Pinecone;
+use OpenAI\Laravel\Facades\OpenAI;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
-use app\Actions\FirstPrompt;
-use App\Models\Conversation;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use App\Models\Message;
+use App\Models\Conversation;
+use App\Actions\StreamingPrompt;
+use App\Actions\FirstPrompt;
+use App\Actions\EmbedWeb;
+use App\SearchClient;
+use App\Actions\GetWebpageContent;
+use App\Actions\CondenseText;
+use App\Actions\AssessWebAccessRequirement;
+use Illuminate\Support\Facades\Process;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +49,7 @@ Route::get('/conversations/{id}', function($id) {
     return view('conversation', [
         'conversation' => $conversation,
     ]);
-})->name('coversation');
+})->name('conversation');
 
 Route::post('chat/{id}', function(Request $request, FirstPrompt $prompt, $id) {
     if ($id == 'new') {
@@ -47,13 +59,22 @@ Route::post('chat/{id}', function(Request $request, FirstPrompt $prompt, $id) {
     }
 
     $conversation->messages()->create([
-        'content' => $request->input('prompt')
+        'content' => $request->input('prompt'),
+        'role' => 'user',
     ]);
 
-    $result = $prompt->handle($request->input('prompt'));
+    $messages = $conversation->messages->map(function(Message $message) {
+        return [
+            'content' => $message->content,
+            'role' => 'user',
+        ];
+    })->toArray();
+
+    $result = $prompt->handle($messages);
 
     $conversation->messages()->create([
-        'content' => $result->choices[0]->message->content
+        'content' => $result->choices[0]->message->content,
+        'role' => 'assistant',
     ]);
 
     return redirect()->route('conversation', ['id' => $conversation->id]);

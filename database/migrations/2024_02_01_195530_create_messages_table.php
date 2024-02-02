@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('conversation_id');
             $table->text('content');
+            $table->string('role');
             $table->timestamps();
         });
     }
