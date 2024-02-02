@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+
 use andreskrey\Readability\Readability;
 use andreskrey\Readability\Configuration;
 use \Probots\Pinecone\Client as Pinecone;
