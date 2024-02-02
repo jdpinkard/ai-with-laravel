@@ -5,7 +5,6 @@
 /public/storage
 /storage/*.key
 /vendor
-/config/openai.php
 .env
 .env.backup
 .env.production
@@ -18,3 +17,4 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+config/openai.php
