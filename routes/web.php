@@ -77,21 +77,24 @@ Route::post('chat/{id}', function(Request $request, FirstPrompt $prompt, $id) {
         'input' => $request->input('prompt')
         ]);
 
-    $results = $pinecone->index('chatbox')->vectors()->query(vector: $question->embeddings[0]->embedding, namespace: 'podcast', topK: 4)->json();
+    $results = $pinecone->index('chatbox')->vectors()->query(vector: $question->embeddings[0]->embedding, namespace: 'wef', topK: 4)->json();
 
+    $context = collect($results['matches'])
+        ->map(fn (array $match) => 'From page number: '. $match['metadata']['page'] . "\n" . $match['metadata']['text'])
+        ->join("\n\n---\n\n");
 
     $systemMessage = [
         'role' => 'system',
         'content' => sprintf(
-            'Base your answer on the Febuary 2023 podcast episode between Tim Urban and Lex Fridman. Here are some snippets from that episode that may help you answer: %s',
-            collect($results['matches'])->pluck('metadata.text')->join("\n\n---\n\n"),
+            'Here is relevant snippets from the 2023 WEF Global Risks Report. you should base your answer on them: %s',
+            $context,
         ),
     ];
 
     $result = $prompt->handle(array_merge([$systemMessage], $messages));
 
     $conversation->messages()->create([
-        'content' => $result->choices[0]->message->content,
+        'content' => $result->choices[0]->message->content . "\n" . collect($results['matches'])->pluck('metadata.page')->join(','),
         'role' => 'assistant',
     ]);
 

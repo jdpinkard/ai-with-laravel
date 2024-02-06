@@ -13,6 +13,9 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'pdftotext' => [
+        'path' => env('PDF_TO_TEXT_PATH)', '/opt/homebrew/bin/pdftotext')
+    ],
 
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),

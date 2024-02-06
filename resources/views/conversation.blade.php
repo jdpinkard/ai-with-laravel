@@ -843,9 +843,9 @@
 
                 <form class="mt-24 " method="POST" action="{{ route('chat', [$conversation?->id ?? 'new']) }}">
                     @csrf
-                    <div class="flex items-center justify-center space-x-4 dark:text-white selection:text-white">
-                        <input type="text" name="prompt"/>
-                        <button class="py-1 px-2 flex-none" type="submit">Submit</button>
+                    <div class="flex items-center justify-center space-x-4">
+                        <input class="text-black" type="text" name="prompt"/>
+                        <button class="py-1 px-2 flex-none dark:text-white selection:text-white" type="submit">Submit</button>
                     </div>
                 </form>
             </div>
